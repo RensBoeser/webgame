@@ -31,6 +31,13 @@ socket.on("players", currentUsers => {
 		`<li><strong>[${user.id}]</strong> pos: (${user.position.x}, ${user.position.y}), mov: (${user.movement.x}, ${user.movement.y})</li>`
 	).join("\n");
 
-	game.innerHTML = users.map(user => `<div class="player" id="${user.id}" style="top: ${user.position.y}px; left: ${user.position.x}px;"><div class="player__title">${user.id}</div></div>`).join("\n");
+	game.innerHTML = users.map(user => {
+		const rotation = Math.atan2(user.movement.y, user.movement.x) - Math.PI * 0.5;
+
+		return `
+<div class="player" id="${user.id}" style="top: ${user.position.y}px; left: ${user.position.x}px;">
+	<div class="player__title">${user.id}</div>
+	<div class="player__arrow" style="transform: rotate(${rotation}rad);"></div>
+</div>`}).join("\n");
 	
 });

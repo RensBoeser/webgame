@@ -25,3 +25,15 @@
 	color: white;
 	white-space: nowrap;
 }
+
+.player__arrow {
+	position: absolute;
+	top: 50px;
+	left: 50px;
+	height: 80px;
+	width: 25px;
+	background: url("/image/chevron.png") no-repeat;
+	background-size: contain;
+	background-position: bottom;
+	transform-origin: top;
+}
