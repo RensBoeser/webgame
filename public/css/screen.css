@@ -1,4 +1,27 @@
+#game {
+	position: relative;
+	overflow: hidden;
+	width: 2048px;
+	height: 768px;
+	border: 2px dashed grey;
+	background: url("/image/earth.png") no-repeat;
+	background-size: contain;
+}
+
 .player {
+	position: absolute;
   width: 100px;
 	height: 100px;
+	background: url("/image/poppetje_stil-01.png") no-repeat;
+	background-size: contain;
+}
+
+.player__title {
+	position: absolute;
+	top: -20px;
+	left: -100px;
+	right: -100px;
+	text-align: center;
+	color: white;
+	white-space: nowrap;
 }

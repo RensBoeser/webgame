@@ -8,16 +8,17 @@
 #main {
   align-items: center;
   display: flex;
-  height: 100vh;
+  height: 80vh;
   justify-content: center;
   margin: auto;
-  width: 100vw;
+	width: 100vw;
+	overflow: hidden;
 }
 
 #wrapper {
   border: 1px solid black;
-  width: 100px;
-	height: 100px;
+  width: 200px;
+	height: 200px;
 }
 
 .joystick {
@@ -27,4 +28,30 @@
   height: 100%;
   user-select: none;
   width: 100%;
+}
+
+.button {
+ width: 100px;
+ height: 100px;
+}
+
+html, body {
+	position: fixed;
+}
+
+html, body {
+	position: relative;
+	overflow: hidden;
+}
+
+body {
+	position: fixed;
+	overflow: hidden;
+}
+
+body {
+	position: fixed;
+	height: 100%;
+	overflow: hidden;
+	width: 100%;
 }

@@ -1,5 +1,5 @@
 // Socket setup
-const socket = io.connect("http://localhost:4000/");
+const socket = io.connect();
 
 // Client registration
 socket.emit("identify", {
@@ -8,6 +8,10 @@ socket.emit("identify", {
 
 // Query DOM
 const list = document.getElementById("player-list");
+const game = document.getElementById("game");
+
+// Variables
+let users = [];
 
 // Listen to events
 socket.on("connected", data => {
@@ -21,9 +25,12 @@ socket.on("disconnected", data => {
 });
 
 socket.on("players", currentUsers => {
-	const listedUsers = currentUsers.map(item =>
-		`<li><strong>[${item.id}]</strong> pos: (${item.position.x}, ${item.position.y}), mov: (${item.movement.x}, ${item.movement.y})</li>`
-	)
+	users = currentUsers;
 
-	list.innerHTML = listedUsers.join("\n");
+	list.innerHTML = users.map(user =>
+		`<li><strong>[${user.id}]</strong> pos: (${user.position.x}, ${user.position.y}), mov: (${user.movement.x}, ${user.movement.y})</li>`
+	).join("\n");
+
+	game.innerHTML = users.map(user => `<div class="player" id="${user.id}" style="top: ${user.position.y}px; left: ${user.position.x}px;"><div class="player__title">${user.id}</div></div>`).join("\n");
+	
 });

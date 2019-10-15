@@ -44,6 +44,8 @@ io.on("connection", socket => {
 		const user = currentUsers.find(item => item.id === socket.id)
 		if (user) {
 			user.movement = movement
+			user.position.x += movement.x * 4
+			user.position.y += movement.y * 4
 		}
 	})
 

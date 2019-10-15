@@ -1,5 +1,5 @@
 // Socket setup
-const socket = io.connect("http://localhost:4000/");
+const socket = io.connect();
 
 // Client registration
 socket.emit("identify", {
