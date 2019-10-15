@@ -1,0 +1,7 @@
+td:not(:last-child), tr:not(:last-child) {
+    border-bottom: 1px solid #ededed;
+}
+
+#title {
+    text-align: left;
+}

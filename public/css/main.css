@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Kalam|Permanent+Marker&display=swap');
+
+* {
+  border: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+	font-family: 'Kalam', cursive;
+}

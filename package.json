@@ -2,9 +2,9 @@
   "name": "webserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "server/index.ts",
   "scripts": {
-    "start": "nodemon index"
+    "start": "nodemon server/index"
   },
   "author": "",
   "license": "ISC",

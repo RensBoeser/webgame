@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js.map"></script>
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/leaderboards.css">
+	</head>
+	<body>
+		<button class="button" onclick="selectLeaderboard('time')">time</button>
+		<button class="button" onclick="selectLeaderboard('kills')">kills</button>
+		<button class="button" onclick="selectLeaderboard('suicides')">suicides</button>
+		<button class="button" onclick="selectLeaderboard('hits')">hits</button>
+		<table>
+			<th colspan="10" id="title">title</th>
+			<span id="leaderboard-content">
+				<tr><td>1.0</td><td>Noah</td><td>allerbeste</td></tr>
+				<tr><td>1.5</td><td>Rens</td><td>bijnaallerbeste</td></tr>
+				<tr><td>2.0</td><td>Sven</td><td>blijfttochjekleinehè</td></tr>
+			</span>
+		</table>
+		<script src="/js/leaderboards.js"></script>
+	</body>
+</html>

@@ -2,12 +2,17 @@
 	<head>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js.map"></script>
-		<link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/client.css">
 	</head>
 	<body>
-		<div id="app">
-		</div>		
 		<div id="main">
+			<div id="login">
+				<p>Welcome to our game!<br>What is your name?</p>
+				<input type="text" name="username" id="name-input">
+				<button class="button" id="send-name">To battle!</button>
+				<p id="error"></p>
+			</div>
 			<div id="wrapper">
 			</div>
 		</div>
