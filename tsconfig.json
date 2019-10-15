@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "outDir": "./build/",
+    "rootDir": ".",
+    "strict": true,
+		"baseUrl": ".",
+		"module": "commonjs",
+		"esModuleInterop": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  }
+}
