@@ -22,13 +22,14 @@ const createPlayer = (id: string, name: string): Player => ({
 	position: { x: 0, y: 0 },
 	movement: { x: 0, y: 0 },
 	velocity: { x: 0, y: 0 },
+	direction: 0,
+	attack: false,
 	secondsAlive: 0,
 	kills: 0,
-	score: 0,
-	direction: 0
+	score: 0
 })
 
-const updatePlayers = () => {
+const update = () => {
 
 	// Update player values
 	currentUsers = currentUsers.map(user => ({
@@ -40,6 +41,8 @@ const updatePlayers = () => {
 
 	// Calculate possible attack collisions
 	const radius = 150
+	const arrowHeight = 100
+	const arrowRadius = 100
 	const pairs = currentUsers.reduce((acc, curr, index) => {
 		const inRange = currentUsers.slice(index + 1).filter(otherUser => {
 			const x = curr.position.x - otherUser.position.x
@@ -49,6 +52,41 @@ const updatePlayers = () => {
 		})
 		return [...acc, ...inRange.map(usr => [curr, usr] as [Player, Player])]
 	}, [] as Array<[Player, Player]>)
+
+	const redArrowsForUsers = pairs.map(pair => {
+		const directionInDegrees1 = pair[0].direction * (180 / Math.PI)
+		const directionInDegrees2 = pair[1].direction * (180 / Math.PI)
+		const arrowPosition1 = {
+			x: arrowHeight * Math.cos(directionInDegrees1) + pair[0].position.x,
+			y: arrowHeight * Math.sin(directionInDegrees1) + pair[0].position.y
+		}
+		const arrowPosition2 = {
+			x: arrowHeight * Math.cos(directionInDegrees2) + pair[1].position.x,
+			y: arrowHeight * Math.sin(directionInDegrees2) + pair[1].position.y
+		}
+
+		const x1 = arrowPosition1.x - pair[1].position.x
+		const y1 = arrowPosition1.y - pair[1].position.y
+		const x2 = arrowPosition2.x - pair[0].position.x
+		const y2 = arrowPosition2.y - pair[0].position.y
+
+		const inRange1 = arrowRadius > Math.sqrt(x1 * x1 + y1 * y1)
+		const inRange2 = arrowRadius > Math.sqrt(x2 * x2 + y2 * y2)
+
+		return [{player: pair[0], canAttack: inRange1}, {player: pair[1], canAttack: inRange2}]
+	})
+
+	redArrowsForUsers.map(pair => {
+		console.log(pair[0].canAttack, pair[1].canAttack)
+		if (pair[0].canAttack && pair[0].player.attack) {
+			pair[1].player.velocity.x += 40
+			pair[1].player.velocity.y += 40
+		}
+		if (pair[1].canAttack && pair[1].player.attack) {
+			pair[0].player.velocity.x += 40
+			pair[0].player.velocity.y += 40
+		}
+	})
 
 	/*const redArrowsForUsers = pairs.map(pair => {
 		const pos = {
@@ -118,10 +156,11 @@ io.on("connection", socket => {
 	})
 
 	// Listen to events
-	socket.on("movement", (movement: Point) => {
+	socket.on("controls", (controls: {movement: Point, attack: boolean}) => {
 		const user = currentUsers.find(item => item.id === socket.id)
 		if (user) {
-			user.movement = movement
+			user.movement = controls.movement
+			user.attack = controls.attack
 		}
 	})
 
@@ -135,8 +174,10 @@ io.on("connection", socket => {
 		})
 		console.log(`[${socket.id}] closed socket connection`)
 	})
+
 })
 
-// Set periodic events
-setInterval(updatePlayers, 16)
+// Start gameloops
+const fps = 60
+setInterval(update, 1000 / fps)
 setInterval(() => currentUsers.map(user => user.secondsAlive++), 1000)

@@ -5,6 +5,7 @@ export interface Player {
 	movement: Point
 	velocity: Point
 	direction: number
+	attack: boolean
 	secondsAlive: number
 	kills: number
 	score: number

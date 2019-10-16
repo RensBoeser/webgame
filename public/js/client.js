@@ -12,13 +12,19 @@ const nameInput = document.getElementById("name-input");
 const errorHolder = document.getElementById("error");
 const loginHolder = document.getElementById("login");
 const joystickWrapper = document.getElementById('wrapper');
+const attackButton = document.getElementById("attack");
 
 // Variables
 const joystick = createJoystick(joystickWrapper);
+let attack = false;
 
 // Functions
-function emitJoystick() {
-  socket.emit("movement", joystick.getPosition());
+function emitControls() {
+  socket.emit("controls", {
+		movement: joystick.getPosition(),
+		attack: attack
+	});
+	attack = false;
 }
 
 function createJoystick(parent) {
@@ -103,8 +109,12 @@ socket.on("joined", data => {
 });
 
 // Add events
-setInterval(emitJoystick, 16);
+setInterval(emitControls, 16);
 
 button.addEventListener("click", () => {
   socket.emit("set-name", { name: nameInput.value });
+});
+
+attackButton.addEventListener("click", () => {
+	attack = true;
 });
