@@ -9,12 +9,17 @@
 		<div id="main">
 			<div id="login">
 				<p>Welcome to our game!<br>What is your name?</p>
-				<input type="text" name="username" id="name-input">
-				<button class="button" id="send-name">To battle!</button>
+				<input type="text" name="username" id="name-input" class="login-input">
 				<p id="error"></p>
+				<button class="button" id="send-name">To battle!</button>
 			</div>
-			<div id="wrapper"></div>
-			<button class="button" id="attack">Attack</button>
+			<div id="controls">
+				<div class="player-info">
+					<h1 id="player-name"></h1>
+				</div>
+				<div id="wrapper"></div>
+				<button class="button button--red" id="attack">Attack</button>
+			</div>
 		</div>
 		<script src="/js/client.js"></script>
 	</body>
