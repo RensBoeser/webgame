@@ -15,6 +15,9 @@ app.use(express.static("public"))
 
 // Variables
 let currentUsers: Array<Player> = []
+const playerRadius = 150
+const arrowRadius = 150
+const arrowHeight = 80
 
 // Functions
 const createPlayer = (id: string, name: string, startPosition: { x: number, y: number }): Player => ({
@@ -33,10 +36,6 @@ const createPlayer = (id: string, name: string, startPosition: { x: number, y: n
 })
 
 const update = () => {
-	const playerRadius = 150
-	const arrowRadius = 150
-	const arrowHeight = 80
-
 	// Update player values
 	currentUsers = updatePoints(currentUsers, arrowHeight)
 
