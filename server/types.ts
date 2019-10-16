@@ -3,6 +3,7 @@ export interface Player {
 	name: string
 	position: Point
 	movement: Point
+	velocity: Point
 	direction: number
 	secondsAlive: number
 	kills: number

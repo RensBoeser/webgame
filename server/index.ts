@@ -21,6 +21,7 @@ const createPlayer = (id: string, name: string): Player => ({
 	name,
 	position: { x: 0, y: 0 },
 	movement: { x: 0, y: 0 },
+	velocity: { x: 0, y: 0 },
 	secondsAlive: 0,
 	kills: 0,
 	score: 0,
@@ -29,10 +30,12 @@ const createPlayer = (id: string, name: string): Player => ({
 
 const updatePlayers = () => {
 
-	// Calculate direction
+	// Update player values
 	currentUsers = currentUsers.map(user => ({
 		...user,
-		direction: user.movement.y === 0 && user.movement.x === 0 ? user.direction : Math.atan2(user.movement.y, user.movement.x)
+		direction: user.movement.y === 0 && user.movement.x === 0 ? user.direction : Math.atan2(user.movement.y, user.movement.x),
+		velocity: { x: user.velocity.x * 0.9 + user.movement.x, y: user.velocity.y * 0.9 + user.movement.y },
+		position: { x: user.position.x += user.velocity.x, y: user.position.y += user.velocity.y }
 	}))
 
 	// Calculate possible attack collisions
@@ -119,8 +122,6 @@ io.on("connection", socket => {
 		const user = currentUsers.find(item => item.id === socket.id)
 		if (user) {
 			user.movement = movement
-			user.position.x += movement.x * 4
-			user.position.y += movement.y * 4
 		}
 	})
 
