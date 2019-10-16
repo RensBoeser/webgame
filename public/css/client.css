@@ -10,13 +10,18 @@
 
 #wrapper {
   border: 1px solid black;
+  background-image: url("/image/Achterlaag.png");
+  background-repeat: no-repeat; 
+  border-radius: 100%;
   width: 200px;
   height: 200px;
   display: none;
 }
 
 .joystick {
-  background-color: black;
+  background-image: url("/image/geen schaduw.png");
+  background-repeat: no-repeat; 
+  background-size: cover;
   border-radius: 100%;
   cursor: pointer;
   height: 100%;
