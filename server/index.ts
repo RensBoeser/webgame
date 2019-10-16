@@ -35,7 +35,7 @@ const update = () => {
 	currentUsers = currentUsers.map(user => ({
 		...user,
 		direction: user.movement.y === 0 && user.movement.x === 0 ? user.direction : Math.atan2(user.movement.y, user.movement.x),
-		velocity: { x: user.velocity.x * 0.9 + user.movement.x, y: user.velocity.y * 0.9 + user.movement.y },
+		velocity: { x: user.velocity.x * 0.9 + user.movement.x * 0.5, y: user.velocity.y * 0.9 + user.movement.y * 0.5 },
 		position: { x: user.position.x += user.velocity.x, y: user.position.y += user.velocity.y }
 	}))
 
