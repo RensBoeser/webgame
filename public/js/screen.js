@@ -50,9 +50,8 @@ socket.on("players", currentUsers => {
 
 			const playerArrow = element.getElementsByClassName("player__arrow")[0];
 			if (playerArrow) {
-				const rotation = Math.atan2(user.movement.y, user.movement.x) - Math.PI * 0.5;
 				const speed = Math.sqrt(Math.pow(user.movement.x, 2) + Math.pow(user.movement.y, 2));
-				playerArrow.style.transform = `rotate(${rotation}rad)`;
+				playerArrow.style.transform = `rotate(${user.direction - Math.PI * 0.5}rad)`;
 				playerArrow.style.opacity = speed;
 				playerArrow.style.height = `${Math.max(80 * speed, 40)}px`;
 			}
