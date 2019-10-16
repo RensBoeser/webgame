@@ -29,6 +29,19 @@ socket.on("disconnected", data => {
 	}
 });
 
+socket.on("dead", playerId => {
+	const player = document.getElementById(playerId);
+	if (player) {
+		player.style.transition = "top 2s, left 2s, width 2s, height 2s"
+		player.style.top = parseInt(player.style.top) + 50
+		player.style.left = parseInt(player.style.left) + 50
+		player.style.width = "0px";
+		player.style.height = "0px";
+		setTimeout(() => player.remove(), 1500);
+	}
+	
+});
+
 socket.on("players", currentUsers => {
 	users = currentUsers;
 
@@ -43,17 +56,26 @@ socket.on("players", currentUsers => {
 	users.forEach((user, index) => {
 		var element = document.getElementById(user.id);
 		if (element) {
-			if (element.style.left !== `${user.position.x}px` && element.style.top !== `${user.position.y}px`) {
-				element.style.left = `${user.position.x}px`;
-				element.style.top = `${user.position.y}px`;
-			}
+			// if (element.style.left !== `${user.position.x}px` && element.style.top !== `${user.position.y}px`) {
+			element.style.left = `${user.position.x}px`;
+			element.style.top = `${user.position.y}px`;
+			// }
 
 			const playerArrow = element.getElementsByClassName("player__arrow")[0];
 			if (playerArrow) {
 				const speed = Math.sqrt(Math.pow(user.movement.x, 2) + Math.pow(user.movement.y, 2));
 				playerArrow.style.transform = `rotate(${user.direction - Math.PI * 0.5}rad)`;
-				playerArrow.style.opacity = speed;
-				playerArrow.style.height = `${Math.max(80 * speed, 40)}px`;
+				if (user.canAttack.length) {
+					playerArrow.style.opacity = 1;
+					playerArrow.style.height = `${Math.max(80 * speed, 60)}px`;
+
+					playerArrow.classList.add("player__arrow-red");
+				} else {
+					playerArrow.style.opacity = speed;
+					playerArrow.style.height = `${Math.max(80 * speed, 40)}px`;
+					
+					playerArrow.classList.remove("player__arrow-red");
+				}
 			}
 
 			const playerCrown = element.getElementsByClassName("player__crown")[0];
@@ -68,15 +90,15 @@ socket.on("players", currentUsers => {
 			}
 		} else {
 			console.log(`user with ID '${user.id}' not in elements`);
-			addPlayerToElements(user.id, user.name);
+			addPlayerToElements(user);
 		}
 	});
 });
 
-function addPlayerToElements(id, name) {
+function addPlayerToElements(player) {
 	game.innerHTML +=`
-<div class="player" id="${id}">
- 	<div class="player__title"><div class="player__crown"></div>${name}</div>
- 	<div class="player__arrow"></div>
+<div class="player" id="${player.id}" style="left: ${player.position.x}; top: ${player.position.y}">
+ 	<div class="player__title"><div class="player__crown"></div>${player.name}</div>
+ 	<div class="player__arrow arrow"></div>
  </div>`;
 }

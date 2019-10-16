@@ -13,6 +13,8 @@ const errorHolder = document.getElementById("error");
 const loginHolder = document.getElementById("login");
 const joystickWrapper = document.getElementById('wrapper');
 const attackButton = document.getElementById("attack");
+const controlsHolder = document.getElementById("controls");
+const playerName = document.getElementById("player-name");
 
 // Variables
 const joystick = createJoystick(joystickWrapper);
@@ -23,8 +25,7 @@ function emitControls() {
   socket.emit("controls", {
 		movement: joystick.getPosition(),
 		attack: attack
-	});
-	attack = false;
+  });
 }
 
 function createJoystick(parent) {
@@ -93,6 +94,15 @@ function createJoystick(parent) {
 }
 
 // Listen to events
+socket.on("dead", id => {
+  if (id === socket.id) {
+    setTimeout(() => {
+      loginHolder.style.display = "block";
+      controlsHolder.style.display = "none";
+    }, 2000);
+  }
+});
+
 socket.on("set-name-failed", data => {
   if (data.id === socket.id) {
     nameInput.classList.add("invalid");
@@ -104,12 +114,14 @@ socket.on("joined", data => {
   if (data.id === socket.id) {
     errorHolder.innerText = "";
     loginHolder.style.display = "none";
-    joystickWrapper.style.display = "initial";
+    controlsHolder.style.display = "block";
+    playerName.innerText = data.player.name;
   }
 });
 
 // Add events
-setInterval(emitControls, 16);
+setInterval(emitControls, 1000 / 60);
+setInterval(() => attack = false, 1000 / 15);
 
 button.addEventListener("click", () => {
   socket.emit("set-name", { name: nameInput.value });
