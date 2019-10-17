@@ -2,9 +2,14 @@
 const socket = io.connect();
 
 // Client registration
-socket.emit("identify", {
-  kind: "player"
+socket.on("connect", () => {
+  loginHolder.style.display = "block";
+  controlsHolder.style.display = "none";
+	socket.emit("identify", {
+		kind: "screen"
+	});
 });
+
 
 // Query DOM
 const button = document.getElementById("send-name");
@@ -26,6 +31,7 @@ function emitControls() {
 		movement: joystick.getPosition(),
 		attack: attack
   });
+  attack = false;
 }
 
 function createJoystick(parent) {
@@ -99,14 +105,14 @@ socket.on("dead", id => {
     setTimeout(() => {
       loginHolder.style.display = "block";
       controlsHolder.style.display = "none";
-    }, 2000);
+    }, 2250);
   }
 });
 
 socket.on("set-name-failed", data => {
   if (data.id === socket.id) {
     nameInput.classList.add("invalid");
-    errorHolder.innerText = "This username is invalid (1-24 characters) or already in use!";
+    errorHolder.innerText = "This username is invalid (1-14 characters) or already in use!";
   }
 });
 
@@ -121,7 +127,6 @@ socket.on("joined", data => {
 
 // Add events
 setInterval(emitControls, 1000 / 60);
-setInterval(() => attack = false, 1000 / 15);
 
 button.addEventListener("click", () => {
   socket.emit("set-name", { name: nameInput.value });

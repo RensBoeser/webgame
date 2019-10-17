@@ -2,12 +2,13 @@ import express from "express"
 import socket from "socket.io"
 
 import {Player, Point} from "./types"
-import {updateCanAttack, updatePoints, updateDead} from "./update"
+import {checkAttackingPlayers, updatePoints, updateDead} from "./update"
 
 // App setup
 const app = express()
-const server = app.listen(4000, () => {
-	console.log("listening to requests on port 5000")
+const port = 4000
+const server = app.listen(port, () => {
+	console.log(`listening to requests on port ${port}`)
 })
 
 // Static files
@@ -15,7 +16,7 @@ app.use(express.static("public"))
 
 // Variables
 let currentUsers: Array<Player> = []
-const playerRadius = 150
+const playerRadius = 100
 const arrowRadius = 150
 const arrowHeight = 80
 
@@ -29,7 +30,6 @@ const createPlayer = (id: string, name: string, startPosition: { x: number, y: n
 	arrowPosition: { x: 0, y: 0 },
 	direction: 0,
 	attack: false,
-	canAttack: [],
 	secondsAlive: 0,
 	kills: 0,
 	score: 0
@@ -37,13 +37,9 @@ const createPlayer = (id: string, name: string, startPosition: { x: number, y: n
 
 const update = () => {
 	// Update player values
-	currentUsers = updatePoints(currentUsers, arrowHeight)
+	currentUsers = updateDead(updatePoints(currentUsers, arrowHeight))
 
-	// Calculate possible attack collisions
-	currentUsers = updateCanAttack(currentUsers, playerRadius, arrowRadius)
-
-	// Check for alive players
-	currentUsers = updateDead(currentUsers)
+	checkAttackingPlayers(currentUsers, playerRadius)
 
 	io.emit("players", currentUsers)
 }
@@ -65,10 +61,10 @@ io.on("connection", socket => {
 	})
 
 	socket.on("set-name", (data: {name: string}) => {
-		if (data.name && data.name.length <= 24 && !currentUsers.find(user => user.name === data.name)) {
+		if (data.name && data.name.length <= 14 && !currentUsers.find(user => user.name === data.name)) {
 			currentUsers = currentUsers.filter(user => user.id !== socket.id)
 
-			const randomPos = {x: Math.floor(Math.random() * 1750) + 150, y: Math.floor(Math.random() * 450) + 60}
+			const randomPos = {x: Math.floor(Math.random() * 1725) + 175, y: Math.floor(Math.random() * 500) + 60}
 			const player = createPlayer(socket.id, data.name, randomPos)
 
 			currentUsers.push(player)
@@ -85,10 +81,6 @@ io.on("connection", socket => {
 		if (user) {
 			user.movement = controls.movement
 			user.attack = controls.attack
-			if (controls.attack && user.canAttack.length) {
-				// console.log(`${user.name} is attacking`)
-				user.canAttack.map(other => other.velocity.x += 10)
-			}
 		}
 	})
 

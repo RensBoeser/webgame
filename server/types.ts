@@ -7,7 +7,6 @@ export interface Player {
 	arrowPosition: Point
 	direction: number
 	attack: boolean
-	canAttack: Array<Player>
 	secondsAlive: number
 	kills: number
 	score: number

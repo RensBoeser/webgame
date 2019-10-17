@@ -20,83 +20,51 @@ export const updatePoints = (players: Array<Player>, arrowHeight: number): Array
 	}))
 }
 
-export const updateCanAttack = (players: Array<Player>, playerRadius: number, arrowRadius: number): Array<Player> => players.map((player, _, array) => {
-	const others = array.filter(p => p !== player)
-	return {...player, canAttack: others.filter(other => {
-		const inRangeOfArrow = inRange(player.arrowPosition, other.position, arrowRadius)
-		const inRangeOfPlayer = inRange(player.position, other.position, playerRadius)
-
-		return inRangeOfArrow && inRangeOfPlayer
-	})}
-})
-
 export const updateDead = (players: Array<Player>): Array<Player> => players.filter(player => {
-	if (player.position.y < 10 || player.position.y > 600 || player.position.x < 90 || player.position.x > 1830) {
+	if (player.position.y < 30 || player.position.y > 650 || player.position.x < 140 || player.position.x > 1825) {
 		io.emit("dead", player.id)
 		return false
 	}
 	return true
 })
 
-const round = (n: number) => n < 0.01 && n > -0.01 ? 0 : Math.floor(n * 1000) / 1000
+export const attackablePlayers = (players: Array<Player>, player: Player, radius: number): Array<Player> =>
+	players.filter(other => other.id !== player.id ? inRange(player.position, other.position, radius) : false)
 
-const inRange = (a: Point, b: Point, radius: number) => {
-	const xDiff = Math.round(a.x - b.x)
-	const yDiff = Math.round(a.y - b.y)
-	return radius * radius > xDiff * xDiff + yDiff * yDiff
+export const checkAttackingPlayers = (players: Array<Player>, radius: number): void => {
+	players.forEach(player => {
+		if (player.attack) {
+			const targets = attackablePlayers(players, player, radius)
+			targets.forEach(({id}) => {
+				const actualTarget = players.find(player => player.id === id)
+
+				if (actualTarget) {
+					const diff = difference(player.position, actualTarget.position)
+					const power = 40 / -(Math.abs(diff.x) + Math.abs(diff.y))
+
+					actualTarget.velocity.x += power * diff.x
+					actualTarget.velocity.y += power * diff.y
+					player.velocity.x += power * diff.x * -0.1
+					player.velocity.y += power * diff.y * -0.1
+
+					io.emit("punch", {
+						player,
+						target: actualTarget
+					})
+				}
+			})
+		}
+	})
 }
 
-// OLD CODE
-// const radius = 150
-// const pairs = currentUsers.reduce((acc, curr, index) => {
-// 	const inRange = currentUsers.slice(index + 1).filter(otherUser => {
-// 		const x = curr.position.x - otherUser.position.x
-// 		const y = curr.position.y - otherUser.position.y
+const round = (n: number) => n < 0.01 && n > -0.01 ? 0 : Math.floor(n * 1000) / 1000
 
-// 		return radius > Math.sqrt((x * x) + (y * y))
-// 	})
-// 	return [...acc, ...inRange.map(usr => [curr, usr] as [Player, Player])]
-// }, [] as Array<[Player, Player]>)
+const difference = (a: Point, b: Point): Point => ({
+	x: Math.round(a.x - b.x),
+	y: Math.round(a.y - b.y)
+})
 
-// const redArrowsForUsers = pairs.map(pair => {
-// 	const directionInDegrees1 = pair[0].direction * (180 / Math.PI)
-// 	const directionInDegrees2 = pair[1].direction * (180 / Math.PI)
-// 	const arrowPosition1 = {
-// 		x: arrowHeight * Math.cos(directionInDegrees1) + pair[0].position.x,
-// 		y: arrowHeight * Math.sin(directionInDegrees1) + pair[0].position.y
-// 	}
-// 	const arrowPosition2 = {
-// 		x: arrowHeight * Math.cos(directionInDegrees2) + pair[1].position.x,
-// 		y: arrowHeight * Math.sin(directionInDegrees2) + pair[1].position.y
-// 	}
-
-// 	const x1 = arrowPosition1.x - pair[1].position.x
-// 	const y1 = arrowPosition1.y - pair[1].position.y
-// 	const x2 = arrowPosition2.x - pair[0].position.x
-// 	const y2 = arrowPosition2.y - pair[0].position.y
-
-// 	// pair[0].canAttack = arrowRadius > Math.sqrt(x1 * x1 + y1 * y1)
-// 	// pair[1].canAttack = arrowRadius > Math.sqrt(x2 * x2 + y2 * y2)
-
-// 	return [pair[0], pair[1]]
-// })
-
-// redArrowsForUsers.map(pair => {
-// 	// Update the users that can attack
-// 	pair.map(user => {
-// 		const currentUser = currentUsers.find(item => item.id === user.id)
-// 		if (currentUser) {
-// 			currentUser.canAttack = pair[0].canAttack
-// 		}
-// 	})
-
-// 	// Attack (SHOULD BE SOMEWHERE ELSE)
-// 	if (pair[0].canAttack && pair[0].attack) {
-// 		pair[1].velocity.x += 20
-// 		pair[1].velocity.y += 20
-// 	}
-// 	if (pair[1].canAttack && pair[1].attack) {
-// 		pair[0].velocity.x += 20
-// 		pair[0].velocity.y += 20
-// 	}
-// })
+const inRange = (a: Point, b: Point, radius: number): boolean => {
+	const diff = difference(a, b)
+	return radius * radius > diff.x * diff.x + diff.y * diff.y
+}
