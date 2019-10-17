@@ -3,7 +3,6 @@
 	overflow: hidden;
 	width: 2048px;
 	height: 768px;
-	border: 2px dashed grey;
 	background: url("/image/ice-island.png") no-repeat;
 	background-size: contain;
 }
