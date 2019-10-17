@@ -37,12 +37,14 @@
 }
 
 input[type="text"] {
-  border: 1px solid #ededed;
+  border: 1px solid rgb(100, 100, 100);
   border-radius: 4px;
   padding: 5px;
+  font-family: 'Kalam', cursive;
   font-size: 20px;
   width: 100%;
   margin: 10px 0;
+  text-align: center;
 }
 
 p {
