@@ -19,6 +19,12 @@
 	margin-right: 20px;
 }
 
+.player.moving-right > svg {
+	margin-left: 20px;
+	margin-right: -20px;
+	transform: scaleX(-1);
+}
+
 .player__title {
 	position: absolute;
 	top: -20px;

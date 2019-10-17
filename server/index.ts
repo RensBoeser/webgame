@@ -40,7 +40,7 @@ const update = () => {
 
 	checkAttackingPlayers(currentUsers, playerRadius)
 
-	currentUsers.sort((a, b) => a.score > b.score ? -1 : a.score < b.score ? 1 : 0);
+	currentUsers.sort((a, b) => a.score > b.score ? -1 : a.score < b.score ? 1 : 0)
 
 	io.emit("players", currentUsers)
 }

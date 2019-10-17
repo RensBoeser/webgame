@@ -51,13 +51,30 @@ socket.on("disconnected", data => {
 socket.on("dead", playerId => {
 	const player = document.getElementById(playerId);
 	if (player) {
+		// Remove arrow
+		const arrow = player.getElementsByClassName("player__arrow")[0]
+		if (arrow) {
+			arrow.style.display = "none";
+		}
+		
+		// Remove player when death transition ends
+		const removePlayer = () => {
+			const actualPlayer = document.getElementById(player.id);
+			if (actualPlayer && actualPlayer.parentNode) {
+				actualPlayer.parentNode.removeChild(actualPlayer);
+			}
+		}
+
+		player.addEventListener("transitioncancel", removePlayer);
+		player.addEventListener("transitionend", removePlayer);
+
+		// Add death transition
 		player.style.transition = "top 2s, left 2s, width 2s, height 2s"
 		player.style.top = parseInt(player.style.top) + 50
 		player.style.left = parseInt(player.style.left) + 50
 		player.style.width = "0px";
 		player.style.height = "0px";
-		setTimeout(() => player.remove(), 1500);
-	}	
+	}
 });
 
 socket.on("punch", data => {
@@ -93,11 +110,15 @@ socket.on("players", currentUsers => {
 		currentUsers.forEach((user, index) => {
 			var element = document.getElementById(user.id);
 			if (element) {
-				// if (element.style.left !== `${user.position.x}px` && element.style.top !== `${user.position.y}px`) {
 				element.style.left = `${user.position.x}px`;
 				element.style.top = `${user.position.y}px`;
-				// }
-	
+				
+				if (user.movement.x > 0) {
+					element.classList.add("moving-right");
+				} else {
+					element.classList.remove("moving-right");
+				}
+
 				const playerArrow = element.getElementsByClassName("player__arrow")[0];
 				if (playerArrow) {
 					const speed = Math.sqrt(Math.pow(user.movement.x, 2) + Math.pow(user.movement.y, 2));
