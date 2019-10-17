@@ -7,7 +7,7 @@ import {checkAttackingPlayers, updatePoints, updateDead} from "./update"
 
 // App setup
 const app = express()
-const port = 4000
+const port = 5000
 const server = app.listen(port, () => {
 	console.log(`listening to requests on port ${port}`)
 })
@@ -18,7 +18,6 @@ app.use(express.static("public"))
 // Variables
 let currentUsers: Array<Player> = []
 const playerRadius = 100
-const arrowRadius = 150
 const arrowHeight = 80
 
 // Functions
