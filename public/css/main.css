@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Kalam|Permanent+Marker&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Kalam|Permanent+Marker&display=swap");
 
 * {
   border: 0;
@@ -10,3 +10,62 @@
 body {
 	font-family: 'Kalam', cursive;
 }
+
+/* :root {
+  --color-00: #E30613;
+  --color-01: #7F1718;
+  --color-10: green;
+  --color-11: darkgreen;
+  --color-20: pink;
+  --color-21: #DB7093;
+  --color-30: #87CEEB;
+  --color-31: #26567E;
+  --color-40: #6B315F;
+  --color-41: #000000;
+} */
+
+div.c0:not(.player) {background: rgba(227, 6, 19, 0.5);}
+div.c1:not(.player) {background: rgba(0, 128, 0, 0.5);}
+div.c2:not(.player) {background: rgba(255, 192, 203, 0.5);}
+div.c3:not(.player) {background: rgba(135, 206, 235, 0.5);}
+div.c4:not(.player) {background: rgba(107, 49, 95, 0.5);}
+
+li.c0 strong, .player.c0 .player__title, #main.c0 #player-name {color: #7F1718;}
+li.c1 strong, .player.c1 .player__title, #main.c1 #player-name {color: darkgreen;}
+li.c2 strong, .player.c2 .player__title, #main.c2 #player-name {color: #DB7093;}
+li.c3 strong, .player.c3 .player__title, #main.c3 #player-name {color: #26567E;}
+li.c4 strong, .player.c4 .player__title, #main.c4 #player-name {color: #000000;}
+
+.c0 .st6 {fill: #E30613;}
+.c0 .st7 {fill: #7F1718;}
+.c1 .st6 {fill: green;}
+.c1 .st7 {fill: darkgreen;}
+.c2 .st6 {fill: pink;}
+.c2 .st7 {fill: #DB7093;}
+.c3 .st6 {fill: #87CEEB;}
+.c3 .st7 {fill: #26567E;}
+.c4 .st6 {fill: #6B315F;}
+.c4 .st7 {fill: #000000;}
+
+.st0{opacity:0.3;} /* shadow */
+.st1{fill:#009FE3;} /* arms */
+#SVGID_1_ > stop {stop-color: #006CB0;} /* body gradient */
+#SVGID_1_ > stop:first-of-type {stop-color: #009FE3;} /* body gradient */
+.st2{fill:url(#SVGID_1_);} /* body */
+.st3{fill:#445FA9;} /* bruise edge */
+.st4{fill:#5573B7;} /* bruise inside */
+.st5{fill:#FFFFFF;} /* eyes and teeth */
+.tongue{fill: #E30613;}
+.st6{fill:#E30613;} /* gloves and pants */
+.st7{fill:#7F1718;} /* gloves and pants edges */
+.st8{fill:url(#SVGID_2_);}
+.st9{fill:url(#SVGID_3_);}
+.st10{fill:url(#SVGID_4_);}
+.st11{fill:url(#SVGID_5_);}
+.st12{fill:url(#SVGID_6_);}
+.st13{fill:url(#SVGID_7_);}
+.st14{fill:url(#SVGID_8_);}
+.st15{fill:url(#SVGID_9_);}
+.st16{fill:url(#SVGID_10_);}
+.st17{fill:url(#SVGID_11_);}
+.st18{fill:url(#SVGID_12_);}

@@ -10,17 +10,20 @@ socket.on("connect", () => {
 });
 
 // Query DOM
+const listHeader = document.getElementById("player-list-header");
 const list = document.getElementById("player-list");
 const game = document.getElementById("game");
 let loaded = false;
 
-const svgs = [];
-["poppetje_stil.svg", "poppetje_walk-links.svg", "poppetje_walk-rechts.svg", "poppetje_punch1.svg", "poppetje_punch2.svg", "poppetje_punch3.svg", "poppetje_punch4.svg"].forEach((name, index, array) =>
+let svgs = [];
+["poppetje_stil.svg", "poppetje_punch1.svg", "poppetje_punch2.svg", "poppetje_punch3.svg", "poppetje_punch4.svg"].forEach((name, index, array) =>
 	fetch(`/svg/${name}`)
 		.then(r => r.text())
 		.then(t => {
-			svgs.push(t);
-			if (index >= array.length - 1) loaded = true;
+			svgs = [...svgs, t];
+			if (index >= array.length - 1) {
+				loaded = true;
+			}
 		})
 );
 	
@@ -54,23 +57,40 @@ socket.on("dead", playerId => {
 		player.style.width = "0px";
 		player.style.height = "0px";
 		setTimeout(() => player.remove(), 1500);
-	}
-	
+	}	
 });
+
+socket.on("punch", data => {
+	// data: {player: Player, target: Player}
+	const playerElement = document.getElementById(data.player.id);
+	if (playerElement) {
+		const svgElements = playerElement.getElementsByTagName("svg")
+		if (svgElements.length) {
+			for (let i = 1; i < svgs.length; i++) {
+				setTimeout(() => {
+					svgElements[0].remove();
+					playerElement.innerHTML += svgs[i];
+				}, i * 20);
+				setTimeout(() => {
+					svgElements[0].remove();
+					playerElement.innerHTML += svgs[0];
+				}, svgs.length * 20)
+			}
+		}
+	}
+})
 
 socket.on("players", currentUsers => {
 	if (loaded) {
-		users = currentUsers;
 	
 		// List players
-		list.innerHTML = users.map(user =>
-			`<li><strong>${user.name}</strong> Time alive: ${user.secondsAlive}s, Kills: ${user.kills}</li>`
+		listHeader.innerText = `Leaderboard (${currentUsers.length})`
+		list.innerHTML = currentUsers.map(user =>
+			`<li class="c${user.color}"><strong>${user.name}</strong><span>${user.score}</span></li>`
 		).join("\n");
 	
-		users.sort((a, b) => a.score > b.score ? 1 : a.score < b.score ? -1 : 0);
-	
 		// Handle player gameobjects
-		users.forEach((user, index) => {
+		currentUsers.forEach((user, index) => {
 			var element = document.getElementById(user.id);
 			if (element) {
 				// if (element.style.left !== `${user.position.x}px` && element.style.top !== `${user.position.y}px`) {
@@ -106,20 +126,9 @@ socket.on("players", currentUsers => {
 
 async function addPlayerToElements(player) {
 	game.innerHTML +=`
-	<div class="player c${Math.floor(Math.random() * 5)}" id="${player.id}" style="left: ${player.position.x}; top: ${player.position.y}">
-		${svgs[Math.floor(Math.random()*3)]}
+	<div class="player c${player.color}" id="${player.id}" style="left: ${player.position.x}; top: ${player.position.y}">
+		${svgs[0]}
 		<div class="player__title"><div class="player__crown"></div>${player.name}</div>
 		<div class="player__arrow arrow"></div>
 	</div>`;
 }
-
-function htmlToElement(html) {
-    var template = document.createElement('template');
-    html = html.trim();
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-// function timeout(ms) {
-// 	return new Promise(resolve => setTimeout(resolve, ms));
-// }

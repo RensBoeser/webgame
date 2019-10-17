@@ -20,6 +20,9 @@ const joystickWrapper = document.getElementById('wrapper');
 const attackButton = document.getElementById("attack");
 const controlsHolder = document.getElementById("controls");
 const playerName = document.getElementById("player-name");
+const playerCrown = document.getElementById("player-crown");
+const playerScore = document.getElementById("player-score");
+const main = document.getElementById("main");
 
 // Variables
 const joystick = createJoystick(joystickWrapper);
@@ -105,6 +108,7 @@ socket.on("dead", id => {
     setTimeout(() => {
       loginHolder.style.display = "block";
       controlsHolder.style.display = "none";
+      main.classList.remove("c0", "c1", "c2", "c3", "c4");
     }, 2250);
   }
 });
@@ -122,8 +126,24 @@ socket.on("joined", data => {
     loginHolder.style.display = "none";
     controlsHolder.style.display = "block";
     playerName.innerText = data.player.name;
+    main.classList.add(`c${data.player.color}`);
   }
 });
+
+socket.on("players", players => {
+  const index = players.findIndex(player => player.id === socket.id);
+  switch (index) {
+    case 0: playerCrown.classList.add("crown-gold"); playerCrown.classList.remove("crown-silver", "crown-bronze", "crown-dead"); playerCrown.innerText = ""; break;
+    case 1: playerCrown.classList.add("crown-silver"); playerCrown.classList.remove("crown-gold", "crown-bronze", "crown-dead"); playerCrown.innerText = ""; break;
+    case 2: playerCrown.classList.add("crown-bronze"); playerCrown.classList.remove("crown-gold", "crown-silver", "crown-dead"); playerCrown.innerText = ""; break;
+    case -1: playerCrown.classList.add("crown-dead"); playerCrown.classList.remove("crown-gold", "crown-silver", "crown-bronze"); playerCrown.innerText = ""; break;
+    default: playerCrown.classList.remove("crown-gold", "crown-silver", "crown-bronze", "crown-dead"); playerCrown.innerText = `#${index + 1}`; break;
+  }
+
+  if (index >= 0) {
+    playerScore.innerText = players[index].score
+  }
+})
 
 // Add events
 setInterval(emitControls, 1000 / 60);

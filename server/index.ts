@@ -1,6 +1,7 @@
 import express from "express"
 import socket from "socket.io"
 
+import {scoreValues} from "./scores"
 import {Player, Point} from "./types"
 import {checkAttackingPlayers, updatePoints, updateDead} from "./update"
 
@@ -27,12 +28,11 @@ const createPlayer = (id: string, name: string, startPosition: { x: number, y: n
 	position: startPosition,
 	movement: { x: 0, y: 0 },
 	velocity: { x: 0, y: 0 },
-	arrowPosition: { x: 0, y: 0 },
 	direction: 0,
 	attack: false,
-	secondsAlive: 0,
-	kills: 0,
-	score: 0
+	score: 0,
+	color: Math.floor(Math.random() * 5),
+	lastHit: ""
 })
 
 const update = () => {
@@ -40,6 +40,8 @@ const update = () => {
 	currentUsers = updateDead(updatePoints(currentUsers, arrowHeight))
 
 	checkAttackingPlayers(currentUsers, playerRadius)
+
+	currentUsers.sort((a, b) => a.score > b.score ? -1 : a.score < b.score ? 1 : 0);
 
 	io.emit("players", currentUsers)
 }
@@ -64,7 +66,7 @@ io.on("connection", socket => {
 		if (data.name && data.name.length <= 14 && !currentUsers.find(user => user.name === data.name)) {
 			currentUsers = currentUsers.filter(user => user.id !== socket.id)
 
-			const randomPos = {x: Math.floor(Math.random() * 1725) + 175, y: Math.floor(Math.random() * 500) + 60}
+			const randomPos = {x: Math.floor(Math.random() * 1500) + 180, y: Math.floor(Math.random() * 450) + 100}
 			const player = createPlayer(socket.id, data.name, randomPos)
 
 			currentUsers.push(player)
@@ -100,4 +102,4 @@ io.on("connection", socket => {
 // Start gameloops
 const fps = 60
 setInterval(update, 1000 / fps)
-setInterval(() => currentUsers.map(user => user.secondsAlive++), 1000)
+setInterval(() => currentUsers.map(user => user.score += scoreValues.time), 1000)

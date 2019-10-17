@@ -4,12 +4,11 @@ export interface Player {
 	position: Point
 	movement: Point
 	velocity: Point
-	arrowPosition: Point
 	direction: number
 	attack: boolean
-	secondsAlive: number
-	kills: number
 	score: number
+	color: number
+	lastHit: string
 }
 
 export interface Point {
