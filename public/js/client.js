@@ -4,6 +4,7 @@ const socket = io.connect();
 // Client registration
 socket.on("connect", () => {
   loginHolder.style.display = "block";
+  queueHolder.style.display = "none";
   controlsHolder.style.display = "none";
 	socket.emit("identify", {
 		kind: "player"
@@ -21,6 +22,8 @@ const controlsHolder = document.getElementById("controls");
 const playerName = document.getElementById("player-name");
 const playerCrown = document.getElementById("player-crown");
 const playerScore = document.getElementById("player-score");
+const queueHolder = document.getElementById("queue");
+const queuePosition = document.getElementById("queue-position");
 const main = document.getElementById("main");
 
 // Variables
@@ -122,9 +125,24 @@ socket.on("dead", id => {
   if (id === socket.id) {
     setTimeout(() => {
       loginHolder.style.display = "block";
+      queueHolder.style.display = "none";
       controlsHolder.style.display = "none";
       main.classList.remove("c0", "c1", "c2", "c3", "c4");
     }, 2250);
+  }
+});
+
+socket.on("queue", queue => {
+  const positionInQueue = queue.findIndex(x => x.id === socket.id);
+  if (positionInQueue >= 0) {
+    queuePosition.innerText = positionInQueue == 0
+      ? "All we need is one more person to... eh.. fall off"
+      : positionInQueue == 1
+        ? `There is one person in line waiting before you`
+        : `There are ${positionInQueue} people waiting in line before you`;
+    loginHolder.style.display = "none";
+    queueHolder.style.display = "block";
+    controlsHolder.style.display = "none";
   }
 });
 
@@ -139,6 +157,7 @@ socket.on("joined", data => {
   if (data.id === socket.id) {
     errorHolder.innerText = "";
     loginHolder.style.display = "none";
+    queueHolder.style.display = "none";
     controlsHolder.style.display = "block";
     playerName.innerText = data.player.name;
     main.classList.add(`c${data.player.color}`);

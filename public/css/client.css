@@ -27,7 +27,8 @@
   margin: 54px auto;
 }
 
-#controls {
+#controls,
+#queue {
   display: none;
   margin: auto;
 }

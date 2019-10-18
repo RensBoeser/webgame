@@ -18,8 +18,8 @@ app.use(express.static("public"))
 
 // Variables
 let currentUsers: Array<Player> = []
-const queue: Array<{id: string, name: string}> = []
-const maxPlayers = 30
+let queue: Array<{id: string, name: string}> = []
+const maxPlayers = 40
 const playerRadius = 100
 const arrowHeight = 80
 
@@ -74,6 +74,7 @@ io.on("connection", socket => {
 			} else if (!queue.find(x => x.id === socket.id)) {
 				console.log(`Added player ${data.name} to queue`)
 				queue.push({id: socket.id, name: data.name})
+				io.sockets.emit("queue", queue)
 			}
 		} else {
 			io.sockets.emit("set-name-failed", {name: data.name, id: socket.id})
@@ -99,6 +100,8 @@ io.on("connection", socket => {
 	socket.on("disconnect", _ => {
 		const user = currentUsers.find(item => item.id === socket.id)
 		currentUsers = currentUsers.filter(item => item.id !== socket.id)
+		queue = queue.filter(item => item.id !== socket.id)
+		io.sockets.emit("queue", queue)
 		io.sockets.emit("disconnected", {
 			id: socket.id,
 			currentUsers,
@@ -114,6 +117,7 @@ export const checkQueue = (): void => {
 		const p = queue[0]
 		spawnPlayer(p.name, p.id)
 		queue.shift()
+		io.sockets.emit("queue", queue)
 	}
 }
 
@@ -125,11 +129,12 @@ export const spawnPlayer = (name: string, id: string): void => {
 
 	currentUsers.push(player)
 	io.sockets.emit("joined", {player, currentUsers, id})
+	console.log(`[${id}] joined the game as '${name}'`)
 }
 
 const generateName = (): string => {
 	let name = hri.random().split("-")
-		.filter((item, index) => index < 2)
+		.filter((_, index) => index < 2)
 		.join(" ")
 	name = name[0].toUpperCase() + name.slice(1)
 	return currentUsers.find(user => user.name === name) ? generateName() : name
