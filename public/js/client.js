@@ -41,7 +41,7 @@ function getNewName() {
 }
 
 function createJoystick(parent) {
-  const maxDiff = 100;
+  const maxDiff = 50;
   const stick = document.createElement('div');
   stick.classList.add('joystick');
 
@@ -99,8 +99,8 @@ function createJoystick(parent) {
   parent.appendChild(stick);
   return {
     getPosition: () => ({
-      x: currentPos.x / 100,
-      y: currentPos.y / 100
+      x: currentPos.x / 50,
+      y: currentPos.y / 50
     }),
   };
 }
