@@ -18,6 +18,8 @@ app.use(express.static("public"))
 
 // Variables
 let currentUsers: Array<Player> = []
+const queue: Array<{id: string, name: string}> = []
+const maxPlayers = 30
 const playerRadius = 100
 const arrowHeight = 80
 
@@ -38,6 +40,8 @@ const createPlayer = (id: string, name: string, startPosition: { x: number, y: n
 const update = () => {
 	// Update player values
 	currentUsers = updateDead(updatePoints(currentUsers, arrowHeight))
+
+	checkQueue()
 
 	checkAttackingPlayers(currentUsers, playerRadius)
 
@@ -65,14 +69,12 @@ io.on("connection", socket => {
 
 	socket.on("set-name", (data: {name: string}) => {
 		if (data.name && !currentUsers.find(user => user.name === data.name)) {
-			currentUsers = currentUsers.filter(user => user.id !== socket.id)
-
-			const randomPos = {x: Math.floor(Math.random() * 1500) + 180, y: Math.floor(Math.random() * 450) + 100}
-			const player = createPlayer(socket.id, data.name, randomPos)
-
-			currentUsers.push(player)
-			io.sockets.emit("joined", {player, currentUsers, id: socket.id})
-			console.log(`[${socket.id}] joined the game as '${data.name}'`)
+			if (currentUsers.length < maxPlayers) {
+				spawnPlayer(data.name, socket.id)
+			} else if (!queue.find(x => x.id === socket.id)) {
+				console.log(`Added player ${data.name} to queue`)
+				queue.push({id: socket.id, name: data.name})
+			}
 		} else {
 			io.sockets.emit("set-name-failed", {name: data.name, id: socket.id})
 		}
@@ -106,6 +108,24 @@ io.on("connection", socket => {
 	})
 
 })
+
+export const checkQueue = (): void => {
+	while (queue.length && currentUsers.length < maxPlayers) {
+		const p = queue[0]
+		spawnPlayer(p.name, p.id)
+		queue.shift()
+	}
+}
+
+export const spawnPlayer = (name: string, id: string): void => {
+	currentUsers = currentUsers.filter(user => user.id !== id)
+
+	const randomPos = {x: Math.floor(Math.random() * 1500) + 180, y: Math.floor(Math.random() * 450) + 100}
+	const player = createPlayer(id, name, randomPos)
+
+	currentUsers.push(player)
+	io.sockets.emit("joined", {player, currentUsers, id})
+}
 
 const generateName = (): string => {
 	let name = hri.random().split("-")
