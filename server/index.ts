@@ -1,5 +1,6 @@
 import express from "express"
 import socket from "socket.io"
+import {hri} from "human-readable-ids"
 
 import {scoreValues} from "./scores"
 import {Player, Point} from "./types"
@@ -55,14 +56,15 @@ io.on("connection", socket => {
 			io.sockets.emit("connected", {
 				id: socket.id,
 				kind: data.kind,
-				currentUsers
+				currentUsers,
+				name: generateName()
 			})
 		}
 		console.log(`[${socket.id}] identified as '${data.kind}'`)
 	})
 
 	socket.on("set-name", (data: {name: string}) => {
-		if (data.name && data.name.length <= 14 && !currentUsers.find(user => user.name === data.name)) {
+		if (data.name && !currentUsers.find(user => user.name === data.name)) {
 			currentUsers = currentUsers.filter(user => user.id !== socket.id)
 
 			const randomPos = {x: Math.floor(Math.random() * 1500) + 180, y: Math.floor(Math.random() * 450) + 100}
@@ -85,6 +87,13 @@ io.on("connection", socket => {
 		}
 	})
 
+	socket.on("get-new-name", _ => {
+		socket.emit("new-name", {
+			id: socket.id,
+			name: generateName()
+		})
+	})
+
 	socket.on("disconnect", _ => {
 		const user = currentUsers.find(item => item.id === socket.id)
 		currentUsers = currentUsers.filter(item => item.id !== socket.id)
@@ -97,6 +106,14 @@ io.on("connection", socket => {
 	})
 
 })
+
+const generateName = (): string => {
+	let name = hri.random().split("-")
+		.filter((item, index) => index < 2)
+		.join(" ")
+	name = name[0].toUpperCase() + name.slice(1)
+	return currentUsers.find(user => user.name === name) ? generateName() : name
+}
 
 // Start gameloops
 const fps = 60

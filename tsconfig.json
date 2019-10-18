@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "paths": {
+      "*": ["types/*"],
+      "human-readable-ids": ["server/types.d.ts"]
+    },
     "target": "esnext",
     "outDir": "./build/",
     "rootDir": ".",

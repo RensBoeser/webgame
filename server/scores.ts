@@ -3,4 +3,3 @@ export const scoreValues = {
 	hit: 50,
 	time: 5
 }
-

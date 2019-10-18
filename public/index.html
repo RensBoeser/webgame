@@ -9,8 +9,11 @@
 	<body>
 		<div id="main">
 			<div id="login">
-				<p>Welcome to our game!<br>What is your name?</p>
-				<input type="text" name="username" id="name-input" class="login-input" placeholder="Enter player name here">
+				<p>Welcome to our game!<br>Feel free to play with our random name generator!</p>
+				<div class="input-holder">
+					<input type="text" name="username" id="name-input" class="login-input" placeholder="Enter player name here" disabled>
+					<button class="button--small" id="randomiseName" onclick="getNewName()">Randomise</button>
+				</div>
 				<p id="error"></p>
 				<button class="button" id="send-name">To battle!</button>
 			</div>

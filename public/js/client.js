@@ -6,10 +6,9 @@ socket.on("connect", () => {
   loginHolder.style.display = "block";
   controlsHolder.style.display = "none";
 	socket.emit("identify", {
-		kind: "screen"
+		kind: "player"
 	});
 });
-
 
 // Query DOM
 const button = document.getElementById("send-name");
@@ -35,6 +34,10 @@ function emitControls() {
 		attack: attack
   });
   attack = false;
+}
+
+function getNewName() {
+  socket.emit("get-new-name")
 }
 
 function createJoystick(parent) {
@@ -103,6 +106,18 @@ function createJoystick(parent) {
 }
 
 // Listen to events
+socket.on("connected", data => {
+  if (data.id == socket.id) {
+    nameInput.value = data.name;
+  }
+})
+
+socket.on("new-name", data => {
+  if (data.id == socket.id) {
+    nameInput.value = data.name;
+  }
+})
+
 socket.on("dead", id => {
   if (id === socket.id) {
     setTimeout(() => {
@@ -116,7 +131,7 @@ socket.on("dead", id => {
 socket.on("set-name-failed", data => {
   if (data.id === socket.id) {
     nameInput.classList.add("invalid");
-    errorHolder.innerText = "This username is invalid (1-14 characters) or already in use!";
+    errorHolder.innerText = "This username is already in use!";
   }
 });
 
