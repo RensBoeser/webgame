@@ -8,7 +8,7 @@ import {checkAttackingPlayers, updatePoints, updateDead} from "./update"
 
 // App setup
 const app = express()
-const port = 4000
+const port = 5000
 const server = app.listen(port, () => {
 	console.log(`listening to requests on port ${port}`)
 })

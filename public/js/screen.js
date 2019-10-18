@@ -3,7 +3,7 @@ const socket = io.connect();
 
 // Client registration
 socket.on("connect", () => {
-	game.innerHTML = "";
+	playerCanvas.innerHTML = "";
 	socket.emit("identify", {
 		kind: "screen"
 	});
@@ -13,6 +13,8 @@ socket.on("connect", () => {
 const listHeader = document.getElementById("player-list-header");
 const list = document.getElementById("player-list");
 const game = document.getElementById("game");
+const playerCanvas = document.getElementById("players");
+const deadCanvas = document.getElementById("dead");
 let loaded = false;
 
 let svgs = [];
@@ -49,7 +51,7 @@ socket.on("disconnected", data => {
 });
 
 socket.on("dead", playerId => {
-	const player = document.getElementById(playerId);
+	let player = document.getElementById(playerId);
 	if (player) {
 		// Remove arrow
 		const arrow = player.getElementsByClassName("player__arrow")[0]
@@ -58,10 +60,17 @@ socket.on("dead", playerId => {
 		}
 		
 		// Remove player when death transition ends
+		// const removePlayer = () => {
+		// player = document.getElementById(player.id);
+		if (player && player.parentNode) {
+			player.parentNode.removeChild(player);
+			player = deadCanvas.appendChild(player);
+		}
+		// }
+
 		const removePlayer = () => {
-			const actualPlayer = document.getElementById(player.id);
-			if (actualPlayer && actualPlayer.parentNode) {
-				actualPlayer.parentNode.removeChild(actualPlayer);
+			if (player && player.parentNode) {
+				player.parentNode.removeChild(player)
 			}
 		}
 
@@ -69,11 +78,10 @@ socket.on("dead", playerId => {
 		player.addEventListener("transitionend", removePlayer);
 
 		// Add death transition
-		player.style.transition = "top 2s, left 2s, width 2s, height 2s"
-		player.style.top = parseInt(player.style.top) + 50
-		player.style.left = parseInt(player.style.left) + 50
-		player.style.width = "0px";
-		player.style.height = "0px";
+		setTimeout(() => {
+			player.style.transform = "scale(0)";
+		}, 20);
+
 	}
 });
 
@@ -99,7 +107,6 @@ socket.on("punch", data => {
 
 socket.on("players", currentUsers => {
 	if (loaded) {
-	
 		// List players
 		listHeader.innerText = `Leaderboard (${currentUsers.length})`
 		list.innerHTML = currentUsers.map(user =>
@@ -146,7 +153,7 @@ socket.on("players", currentUsers => {
 });
 
 async function addPlayerToElements(player) {
-	game.innerHTML +=`
+	playerCanvas.innerHTML += `
 	<div class="player c${player.color}" id="${player.id}" style="left: ${player.position.x}; top: ${player.position.y}">
 		${svgs[0]}
 		<div class="player__title"><div class="player__crown"></div>${player.name}</div>
