@@ -47,6 +47,36 @@ li.c4 strong, .player.c4 .player__title, #main.c4 #player-name {color: #000000;}
 .c4 .st6 {fill: #6B315F;}
 .c4 .st7 {fill: #000000;}
 
+/*.c0 #SVGID_1_ > stop {stop-color: #ff9999;} /* body gradient */
+/*.c0 #SVGID_1_ > stop:first-of-type {stop-color: #ff6666;} /* body gradient */
+/*.c0 .st1{fill:#ff6666;} /* arms */
+/*.c0 .st3{fill:darkred;} /* bruise edge */
+/*.c0 .st4{fill:#ff5050;} /* bruise inside */
+
+/*.c1 #SVGID_1_ > stop {stop-color: #00ffcc;} /* body gradient */
+/*.c1 #SVGID_1_ > stop:first-of-type {stop-color: #00cc99;} /* body gradient */
+/*.c1 .st1{fill:#00cc99;} /* arms */
+/* .c1 .st3{fill:darkgreen;} /* bruise edge */
+/* .c1 .st4{fill:#00cc66;} /* bruise inside */
+/* 
+/* .c2 .st1{fill:#DB7093;} /* arms */
+/* .c2 #SVGID_1_ > stop {stop-color: pink;} /* body gradient */
+/* .c2 #SVGID_1_ > stop:first-of-type {stop-color: #ff6699;} /* body gradient */
+/* .c2 .st3{fill:#ff3399;} /* bruise edge */
+/* .c2 .st4{fill:#ff5d93;} /* bruise inside */
+/* 
+/* .c3 .st1{fill:#009FE3;} /* arms */
+/* .c3 #SVGID_1_ > stop {stop-color: #006CB0;} /* body gradient */
+/* .c3 #SVGID_1_ > stop:first-of-type {stop-color: #009FE3;} /* body gradient */
+/* .c3 .st3{fill:#445FA9;} /* bruise edge */
+/* .c3 .st4{fill:#5573B7;} /* bruise inside */
+/* 
+/* .c4 .st1{fill:#6B315F;} /* arms */
+/* .c4 #SVGID_1_ > stop {stop-color: #cc3399;} /* body gradient */
+/* .c4 #SVGID_1_ > stop:first-of-type {stop-color: #990099;} /* body gradient */
+/* .c4 .st3{fill:#800380;} /* bruise edge */
+/* .c4 .st4{fill:#8a3879;} /* bruise inside */
+
 .st0{opacity:0.3;} /* shadow */
 .st1{fill:#009FE3;} /* arms */
 #SVGID_1_ > stop {stop-color: #006CB0;} /* body gradient */
